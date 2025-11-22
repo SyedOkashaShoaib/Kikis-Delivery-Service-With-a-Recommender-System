@@ -105,10 +105,28 @@ class Menu(UserMixin, db.Model):
     price = db.Column(db.Numeric(8,2),nullable=False)
     category = db.Column(db.String(20),nullable=False)
     
+ class Order(UserMixin,db.Model):
+    __tablename__='order'
+    order_id = db.Column(db.Integer, primary_key=True)
+    delivery_id = db.Column(db.Integer, db.ForeignKey('delivery_person.id'), nullable=True)
+    customer_id = db.Column(db.Integer,db.ForeignKey('customer.id'), nullable=False)
+    order_status = db.Column(db.String(20), nullable=False, default='IN_CART')
+    __table_args__ = (
+        db.CheckConstraint("order_status IN ('IN_CART','PENDING','ACCEPTED','PREPARING','READY','DISPATCHED','DELIVERED','CANCELLED')", name='order_status_check'),
+    )
+
+class Order_Items(UserMixin, db.Model):
+    __tablename__='order_item'
+    vendor_id = db.Column(db.Integer,db.ForeignKey('vendor.id'), nullable=False)
+    order_item_id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer,db.ForeignKey('order.order_id'), nullable=False)
+    item_id =  db.Column(db.Integer,db.ForeignKey('menu.item_id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False, default=1)   
 @login.user_loader  #registers this fun with flask-login
 def load_user(id):
     return db.session.get(Registered_Users,int(id))  #since id in the parameter is a sring we first have to convert it 
 
 #NOTE: change the Primary key of all profile classes from username to id later on and cascade the changes. Much better I think.
+
 
 
