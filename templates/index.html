@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %} {{title}} {% endblock %}
+{% block link %}<link rel="stylesheet" href="{{ url_for('static', filename='style5.css') }}">{% endblock %}
+{% block body %}
+{% block page_content %}
+
+<!-- 
+<div class="page_header">
+    <h1>What's up! {% if name %} {{ name }} {% else %} stranger {% endif %}</h1>
+</div> -->
+
+{% block form %} 
+    <h1 id="title">Name Form</h1>
+    <p id="description">Checking flask stuff</p>
+    
+    <form id="survey-form" action="" method="POST" novalidate>
+        <p>
+            {{ form.hidden_tag()}}<br>
+            {{form.name.label}}
+            {{form.name()}}
+            {% for error in form.name.errors %}
+            <span style="color:red";>*{{error}}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.password.label}}
+            {{form.password()}}
+            {% for error in form.password.errors %}
+            <span style="color: red";>*{{error}}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.remember_user()}}
+            {{form.remember_user.label}}
+        </p>
+        
+        <p>
+            {{ form.submit()}}
+        </p>
+    </form>
+{% endblock %}
+{% endblock %}
+{% endblock %}

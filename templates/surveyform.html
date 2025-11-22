@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale= 1.0">
+    <!-- Understanding the line:   <meta name="viewport" content="width=device-width, initial-scale= 1.0">:
+    Before the introduction of mobile web browsers, websites were solely made for desktop screens and were
+    unresponsive, as the devs used px to size and align everything. As smartphones became popular, this became a
+    problem as these unresponsive web pages were not designed for mobile screens.Instead of waiting years for web pages
+    to be updated to better fit mobile screens, a quick fix was proposed in which the browser emulated a virtual 
+    desktop viewport making the websites slightly more responsive. Still the users had to zoom out to view the site properly
+    What does "  <meta name="viewport" content="width=device-width, initial-scale= 1.0">" do?
+    it tells the browser to 
+        width = device-wdith -> set the width to the device's width in css pixels (1 css pixel = 1/96th inch) and dont 
+        make a virtual desktop viewport.
+    initial-scale = 1.0 do not zoom out or zoom in the web page 
+    What Happens Without the Tag?
+    The browser sets a default layout viewport (usually 980px wide).
+
+    The page renders like it would on desktop, and the browser scales down (zooms out) to fit the page on the screen.
+
+    You see a zoomed-out page with small fonts, requiring pinch zooming. 
+
+
+    Without this tag: browser says “This phone is too small. Let’s pretend it’s a desktop and zoom out.”
+
+    With this tag: you say, “No need to pretend. I designed this site to work responsively. Use the real screen width.”
+
+
+    For further info read this reddit discussion: 
+    https://www.reddit.com/r/web_design/comments/9y88xl/what_does_the_meta_nameviewport/
+    -->
+    <title>Survey Form</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='style5.css')}}">
+    <body>
+        <h1 id="title">XYZ University Survey Form</h1>
+        <p id="description">This form will be used to evaluate the university's academic facilities</p>
+        
+        <form id="survey-form" action="" method="POST">
+            <fieldset>
+                <label for="name" id="name-label">Name
+                    <input id="name" name="user_name" type="text" placeholder="Ukasha" required/>
+                </label>
+
+                <label for="email" id="email-label">Email
+                    <input id="email" name="user-mail" type="email" placeholder="xyz@gmail.com" required/>
+                </label>
+                <label for="age" id="number-label"> Semester (optional) 
+                    <input id="age" name="user-age" type="number" min="1" max="8" placeholder="1" />
+                </label>
+
+                <label for="major" id="major-label">Bachelors/Masters in
+                    <select id="major" name="user-major" required>
+                        <option value="">--Please select a degree--</option>
+                        <option value="CS">Computer Science</option>
+                        <option value="EE">Electrical Engineering</option>
+                        <option value="SE">Software Engineering</option>
+                    </select>
+                </label>
+            
+            </fieldset> 
+
+            <fieldset>
+                <legend>Select your gender</legend>
+                <label for="male-gender" id="male-label">
+                    <input id="gender" name="gender" type="radio" class="inline" checked>Male
+                </label>
+                <label for="female-gender" id="female-label">
+                    <input id="gender" name="gender" type="radio" class="inline" >Female
+                </label>
+            </fieldset>
+            <fieldset>
+                <legend>Check the elective courses you would consider taking: </legend>
+                <label for="ML">
+                    <input id="ML" name="machine-learning" type="checkbox" value="ML" class="inline" /> Machine Learning
+                </label>
+                <label for="GT">
+                    <input id="GT" name="game-theory" type="checkbox" value="GT" class="inline" /> Game Theory
+                </label>
+                <label for="DS">
+                    <input id="DS" name="data-sc" type="checkbox" value="DS" class="inline" /> Data Science
+                </label>
+            </fieldset>
+            <fieldset>
+                <label for="comments">Comment any other changes the University can make in our academic structure
+                    <textarea id="comments" name="comm" placeholder="Write here.." rows="3" cols="40"></textarea>
+                </label>
+            </fieldset>
+            <input type="submit" value="Submit" />
+        </form>
+
+    </body>
+</html>

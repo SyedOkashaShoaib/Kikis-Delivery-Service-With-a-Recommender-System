@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='customerdashboardstyle.css') }}">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-custom navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white fw-bold" href="#">GAY DUDES </a>
+
+            <div class="d-flex ms-auto">
+                <button class="btn btn-light me-2">Cart</button>
+                <a href="{{ url_for('logout') }}" class="btn btn-dark">Logout</a>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- SEARCH BAR SPACE (empty for now) -->
+    <div class="container-fluid mt-3">
+        <div class="search-space rounded-box"></div>
+    </div>
+
+    <!-- MAIN LAYOUT -->
+    <div class="container-fluid mt-3">
+        <div class="row">
+
+            <!-- LEFT FILTER SIDEBAR -->
+            <div class="col-md-3 sidebar">
+                <div class="rounded-box">
+                    <h5>Filters</h5>
+                    <hr>
+                    <p>Filter options go here...</p>
+                </div>
+            </div>
+
+
+            <div class="col-md-9">
+                {% block items %}
+                <!-- WINDOW 1 — CUISINES -->
+                <div class="rounded-box mb-4">
+                    <h5 class="mb-3">Cuisines</h5>
+
+                    <div class="cuisine-container d-flex flex-wrap gap-3">
+                        <a href="{{ url_for('display_cuisine',cuisine='Italian') }}" class="cuisine-box">Italian</a>
+                        <a href="{{ url_for('display_cuisine',cuisine='Chinese') }}" class="cuisine-box">Chinese</a>
+                        <a href="{{ url_for('display_cuisine',cuisine='Pakistani') }}" class="cuisine-box">Pakistani</a>
+                        <a href="{{ url_for('display_cuisine',cuisine='American') }}" class="cuisine-box">American</a>
+                        <a href="{{ url_for('display_cuisine',cuisine='Carribean') }}" class="cuisine-box">Carribean</a>
+                        <a href="{{ url_for('display_cuisine',cuisine='Korean') }}" class="cuisine-box">Korean</a>
+                    </div>
+                </div>
+
+                <!-- WINDOW 2 — RECOMMENDED -->
+                <div class="rounded-box mb-4">
+                    <h5 class="mb-3">Recommended For You</h5>
+                    {% block recommended %}
+                    <p class="text-muted">Your recommender system content goes here...</p>
+                    <!-- Later: cards or boxes for recommended items -->
+                    {% endblock recommended %}
+                </div>
+
+                <!-- WINDOW 3 — ALL RESTAURANTS -->
+                <div class="rounded-box mb-4">
+                    {% block restaurants %}
+                    <h5 class="mb-3">All Restaurants</h5>
+
+                    <p class="text-muted">List all restaurants here...</p>
+                    <!-- Later: restaurant cards -->
+                     {% endblock restaurants %}
+                </div>
+                {% endblock items %}
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

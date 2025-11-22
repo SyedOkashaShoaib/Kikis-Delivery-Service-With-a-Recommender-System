@@ -1,0 +1,15 @@
+{% extends 'customer_dashboard.html' %}
+
+{% block items %}
+<p> Dont hurt me daddy {{cuisine}}</p>
+{% for x in items %}
+    <p>{{x.name}}</p><br>
+{% endfor %}
+
+{% if next_url %}
+<a href="{{next_url}}">Next page</a>
+{% endif %}
+{% if prev_url %}
+<a href="{{prev_url}}">Previous page</a>
+{% endif %}
+{% endblock %}

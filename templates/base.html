@@ -1,0 +1,92 @@
+<html>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block link %}{% endblock %}
+    <head>
+        {% block head %}
+        {% if title %}
+        <title>{{ title }}</title>
+        {% else %}
+        <title>GAY DUDES DELIVERY</title>
+        {% endif %}
+        {% endblock %}
+        <style>
+            /* Simple navbar styling */
+            nav {
+                background-color: #f5f5f5;
+                padding: 10px;
+            }
+            nav a {
+                text-decoration: none;
+                margin: 0 10px;
+                color: black;
+                font-weight: bold;
+            }
+            /* Dropdown container */
+            .dropdown {
+                display: inline-block;
+                position: relative;
+            }
+            /* Dropdown content */
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                background-color: #ffffff;
+                min-width: 160px;
+                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+                z-index: 1;
+            }
+            .dropdown-content a {
+                display: block;
+                padding: 8px 12px;
+                color: black;
+                text-decoration: none;
+            }
+            .dropdown-content a:hover {
+                background-color: #f1f1f1;
+            }
+            /* Show dropdown on hover */
+            .dropdown:hover .dropdown-content {
+                display: block;
+            }
+        </style>
+    </head>
+
+    <body>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            {% if current_user.is_anonymous %}
+                <a href="{{ url_for('login') }}">Login</a>
+
+                <!-- Dropdown for registration -->
+                <div class="dropdown">
+                    <a href="#">Register ▾</a>
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('register_customer') }}">Register as Customer</a>
+                        <a href="{{ url_for('register_vendor') }}">Register as Vendor</a>
+                        <a href="{{ url_for('register_delivery') }}">Register as Delivery Guy</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% endif %}
+        </nav>
+
+        <hr>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for x in messages %}
+            <li>{{ x }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        {% block body %}
+        {% endblock %}
+    </body>
+</html>
+
+<!-- NOTE: THE LITTLE  BIT OF CSS YOU SEE IS PLACEHOLDER AND AI GENERATED. IT WILL IDEALLY BE REPLACED WITH BOOTSTRAP LATER ON FOR NOW I NEED IT TO DESIGN THE BACKEND -->

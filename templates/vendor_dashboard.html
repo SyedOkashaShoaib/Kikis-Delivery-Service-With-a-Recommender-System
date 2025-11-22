@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- NEW LineIcons v4 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboardstyle.css') }}">
+</head>
+
+<body>
+    
+    <div class="wrapper">
+
+        <!-- Sidebar -->
+        <aside id="sidebar">
+            <div class="d-flex align-items-center py-3 px-2">
+                <button class="toggle-btn" type="button">
+                    <i class="bi bi-grid"></i>
+                </button>
+            
+                <div class="sidebar-logo ms-2">
+                    <h4 class="mb-0 fw-bold company-title">Gay Dudes</h4>
+                </div>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="bi bi-eye-fill"></i>
+                        <span>View Order</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{url_for('edititem')}}" class="sidebar-link">
+                        <i class="bi bi-pencil-square"></i>
+                        <span>Edit Items</span>
+                    </a>
+                </li>
+
+             
+            </ul>
+
+            <!-- Logout -->
+            <div class="sidebar-footer mt-auto">
+                <a href="{{ url_for('logout') }}" class="sidebar-link">
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        
+        <div class="main">
+
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand px-4 py-3 bg-light shadow-sm">
+                <div class="navbar-collapse collapse">
+                    <!-- No account button as requested -->
+                </div>
+            </nav>
+
+            <!-- Dashboard Content -->
+            <main class="content px-3 py-4">
+                <div class="container-fluid">
+                {% block content %}
+                    <h3 class="fw-bold fs-4 mb-3">{{current_user.username}} Dashboard</h3>
+
+                    <!-- (EMPTY AREA) -->
+                    <!-- You can put your own vendor logic here -->
+                    <p class="text-muted">Welcome to your vendor dashboard. Add your content here.</p>
+                    {% endblock %}
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer mt-auto py-3 bg-light">
+                <div class="container-fluid d-flex justify-content-between">
+                    <div><strong>Gay Dudes</strong></div>
+                    <div class="d-none d-md-block">
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item"><a href="#">Contact</a></li>
+                            <li class="list-inline-item"><a href="#">About Us</a></li>
+                            <li class="list-inline-item"><a href="#">Terms & Conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Sidebar Toggle JS -->
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.toggle-btn');
+        
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('expand');
+        });
+    </script>
+    
+</body>
+</html>
