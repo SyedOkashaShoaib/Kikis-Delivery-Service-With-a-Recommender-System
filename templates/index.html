@@ -11,10 +11,21 @@
 </div> -->
 
 {% block form %} 
-    <h1 id="title">Name Form</h1>
-    <p id="description">Checking flask stuff</p>
+    <h1 id="title">Login Form</h1>
     
     <form id="survey-form" action="" method="POST" novalidate>
+        <div class="form-group">
+        <label>{{ form.user_type.label }}</label>
+        <div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
+            {% for value, label in form.user_type.choices %}
+            <label class="btn btn-outline-primary flex-fill">
+                <input type="radio" name="{{ form.user_type.name }}" value="{{ value }}" 
+                    {% if form.user_type.data == value %}checked{% endif %}>
+                {{ label }}
+            </label>
+            {% endfor %}
+        </div>
+        </div>
         <p>
             {{ form.hidden_tag()}}<br>
             {{form.name.label}}
