@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from urllib.parse import urlsplit
 from datetime import datetime, timedelta
 from app.vectorizer import compute_all_item_vectors, compute_item_similarity_matrix, recommend_similar_items, load_all_item_vectors
-from app.user_vectorizer import compute_all_user_vectors, recommend_items_for_user, recommend_items_hybrid
+from app.user_vectorizer import compute_all_user_vectors, recommend_items_hybrid, recommend_cart_complements
 
 @app.route('/customer_dashboard', methods=['GET'])
 @login_required
@@ -27,10 +27,24 @@ def get_customer_dashboard():
     user_vectors = compute_all_user_vectors()
     item_vectors = load_all_item_vectors()
 
-    recs = recommend_items_for_user(current_user.id, user_vectors)
-    print(recs)
+    item_ids = (
+        db.session.query(Order_Items.item_id)
+        .join(Order, Order.order_id == Order_Items.order_id)
+        .filter(
+            Order.customer_id == current_user.id,
+            Order.order_status == "IN_CART"
+        )
+        .all()
+    )
+    item_ids = [item_id for (item_id,) in item_ids]
 
-    hybrid_recs = recommend_items_hybrid(current_user.id, user_vectors, item_vectors)
+
+    if item_ids: ## something in cart
+        print("helo Something is in cart")
+        hybrid_recs = recommend_cart_complements(current_user.id, item_ids, user_vectors, item_vectors, compute_item_similarity_matrix(item_vectors))
+    else:
+        hybrid_recs = recommend_items_hybrid(current_user.id, user_vectors, item_vectors)
+
     # first_elements = [tup[0] for tup in list_of_tuples]
     index = [tup[0] for tup in hybrid_recs]
     print(index)
@@ -638,5 +652,4 @@ def mark_delivered(order_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "error": str(e)})
-
 
