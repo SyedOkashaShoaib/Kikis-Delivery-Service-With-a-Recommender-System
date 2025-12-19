@@ -20,15 +20,24 @@
     <!-- NAVBAR -->
     <nav class="navbar navbar-custom navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand text-white fw-bold" href="#">GAY DUDES </a>
+            <a class="navbar-brand d-flex align-items-center text-white fw-bold"
+                href="{{ url_for('get_customer_dashboard') }}">
+
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="me-2"
+                    style="height: 40px; width: auto;">
+
+                <span>KIKI'S DELIVERY SERVICE</span>
+            </a>
 
             <div class="d-flex ms-auto">
-                <button class="btn btn-light me-2">Cart</button>
+                <a href="{{ url_for('previous_orders') }}" class="btn btn-light me-2">Previous Orders</a>
+                <a href="{{ url_for('cart') }}" class="btn btn-light me-2">Cart</a>
                 <a href="{{ url_for('logout') }}" class="btn btn-dark">Logout</a>
 
             </div>
         </div>
     </nav>
+    {% include 'flashed_messages.html' %}
     {% block content %}
     <!-- SEARCH BAR SPACE (empty for now) -->
     <div class="container-fluid mt-3">
@@ -43,8 +52,64 @@
             <div class="col-md-3 sidebar">
                 <div class="rounded-box">
                     <h5>Filters</h5>
-                    <hr>
-                    <p>Filter options go here...</p>
+                    <br>
+
+                    <form action="{{url_for('apply_filters')}}" method="GET">
+
+                        <input type="hidden" name="cuisine" value="{{ cuisine}}">
+
+
+                        <!-- PRICE FILTER -->
+                        <h6 class="fw-bold">Price</h6>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="discount_only" id="discount_only"
+                                value="1">
+                            <label class="form-check-label" for="discount_only">
+                                Discounted Items Only
+                            </label>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="max_price" class="form-label">Max Price</label>
+                            <input type="number" min="1" class="form-control" name="max_price" id="max_price"
+                                placeholder="e.g., 50000">
+                        </div>
+
+
+
+                        <!-- RATINGS FILTER -->
+                        <br>
+                        <h6 class="fw-bold">Rating</h6>
+                        <div class="form-check mb-3">
+
+                            <input class="form-check-input" type="checkbox" name="rating_4_plus" id="rating_4_plus"
+                                value="1">
+                            <label class="form-check-label" for="rating_4_plus">
+                                Above 4 Rated Items Only
+                            </label>
+                        </div>
+
+
+                        <br>
+                        <!-- PREP TIME FILTER -->
+                        <h6 class="fw-bold">Prep Time</h6>
+
+                        <div class="mb-3">
+                            <label for="prep_time" class="form-label">Max Prep Time (minutes)</label>
+                            <input type="number" min="1" class="form-control" name="prep_time" id="prep_time"
+                                placeholder="e.g., 30">
+                        </div>
+                        <br>
+                        <!-- APPLY FILTER BUTTON -->
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-primary">
+                                Apply Filters
+                            </button>
+                        </div>
+
+                    </form>
+
                 </div>
             </div>
 
@@ -69,8 +134,38 @@
                 <div class="rounded-box mb-4">
                     <h5 class="mb-3">Recommended For You</h5>
                     {% block recommended %}
-                    <p class="text-muted">Your recommender system content goes here...</p>
-                    <!-- Later: cards or boxes for recommended items -->
+                    <h5 class="mb-3">All Items</h5>
+                    <div class="container mt-4">
+
+                        <div class="row g-4">
+                            {% for x in rec_items %}
+                            <!-- Restaurant Card -->
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                <div class="restaurant-card position-relative">
+
+                                    <!-- <img src="{{ url_for('static', filename='images/sample_restaurant.jpg') }}"
+                                        class="restaurant-img" alt="Restaurant"> -->
+
+                                    <h5 class="restaurant-name mt-2">{{x.name}}</h5>
+                                    <p class="restaurant-desc d-inline-block me-3 mb-1"><b>Cuisine: </b>{{x.category}}
+                                    </p>
+                                    <p class="restaurant-desc d-inline-block me-3 mb-1"><b>Price: </b>${{x.price}}</p>
+                                    {% if x.discount > 0 %}
+                                    <p class="restaurant-desc d-inline-block mb-1 discount-text"><b>Discount:
+                                        </b>{{x.discount}} %</p>
+                                    {% endif %}
+                                    <!-- Add Button -->
+                                    <a href="{{ url_for('add_to_cart', vendor_id=x.vendor_id, item_id = x.item_id) }}"
+                                        class="btn add-btn">
+                                        <i class="bi bi-plus"></i>
+                                    </a>
+
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
                     {% endblock recommended %}
                 </div>
 
@@ -90,10 +185,16 @@
                                         class="restaurant-img" alt="Restaurant"> -->
 
                                     <h5 class="restaurant-name mt-2">{{x.name}}</h5>
-                                    <p class="restaurant-desc">{{x.category}}</p>
-
+                                    <p class="restaurant-desc d-inline-block me-3 mb-1"><b>Cuisine: </b>{{x.category}}
+                                    </p>
+                                    <p class="restaurant-desc d-inline-block me-3 mb-1"><b>Price: </b>${{x.price}}</p>
+                                    {% if x.discount > 0 %}
+                                    <p class="restaurant-desc d-inline-block mb-1 discount-text"><b>Discount:
+                                        </b>{{x.discount}} %</p>
+                                    {% endif %}
                                     <!-- Add Button -->
-                                    <a href="{{ url_for('add_to_cart', item_id=x.id) }}" class="btn add-btn">
+                                    <a href="{{ url_for('add_to_cart', vendor_id=x.vendor_id, item_id = x.item_id) }}"
+                                        class="btn add-btn">
                                         <i class="bi bi-plus"></i>
                                     </a>
 
