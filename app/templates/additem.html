@@ -1,0 +1,62 @@
+{% extends "vendor_dashboard.html" %}
+{% block content %}
+<p>Daddy chill</p>
+<form id="survey-form" action="#" method="POST" novalidate>
+    <p>
+    <div class = "name-field">
+        {{ form.hidden_tag()}}<br>
+        {{form.name.label}}
+        {{form.name()}}
+        {% for error in form.name.errors %}
+        <span style="color:red";>*{{error}}</span>
+        {% endfor %}
+    </div>
+    </p>
+    <p>
+        {{form.discount.label}}
+        {{form.discount()}}
+        {% for error in form.discount.errors %}
+        <span style="color: red";>*{{error}}</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{form.price.label}}
+        {{form.price()}}
+        {% for error in form.price.errors %}
+        <span style="color:red";>*{{error}}</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{form.cuisine.label}}
+        {{form.cuisine()}}
+        {% for error in form.cuisine.errors %}
+        <span style="color:red";>*{{error}}</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{form.category.label}}
+        {{form.category()}}
+        {% for error in form.category.errors %}
+        <span style="color:red";>*{{error}}</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{form.type.label}}
+        {{form.type()}}
+        {% for error in form.type.errors %}
+        <span style="color:red";>*{{error}}</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{form.prep_time.label}}
+        {{form.prep_time()}}
+        {% for error in form.prep_time.errors %}
+        <span style="color:red";>*{{error}}</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.submit()}}
+    </p>
+</form>
+{% endblock %}
+

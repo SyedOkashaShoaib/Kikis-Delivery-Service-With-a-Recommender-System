@@ -1,0 +1,32 @@
+/* Custom CSS for the navbar to override/complement Bootstrap */
+
+.navbar-custom {
+    /* Set the background color to #e02655 (the desired color) */
+    background-color: #e02655;
+}
+
+.navbar-custom .nav-link,
+.navbar-custom .dropdown-toggle {
+    /* Text color for links */
+    color: white !important;
+    font-weight: bold;
+}
+
+.navbar-custom .nav-link:hover,
+.navbar-custom .dropdown-toggle:hover {
+    /* Slightly darker color on hover for better feedback */
+    color: #b31f43 !important;
+}
+
+/* Dropdown background color for contrast - this is a refinement */
+.dropdown-menu {
+    background-color: #ffffff;
+}
+
+.dropdown-item {
+    color: #333;
+}
+
+.dropdown-item:hover {
+    background-color: #f1f1f1;
+}

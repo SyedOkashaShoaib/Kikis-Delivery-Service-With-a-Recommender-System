@@ -1,0 +1,80 @@
+{% extends "vendor_dashboard.html" %}
+{% block content %}
+        <h2>Orders</h2>
+
+        {% for order in orders %}
+        <div class="order-row">
+            <div class="order-info">
+                Order #{{ order.order_id }} — Status: 
+                <span class="status-badge status-{{ order.order_status|lower }}">
+                    {{ order.order_status }}
+                </span>
+            </div>
+
+            <div>
+                <!-- STATUS UPDATE BUTTON -->
+                <form action="{{ url_for('update_order_status', order_id=order.order_id) }}" method="POST" style="display:inline;">
+                    {% if order.order_status == 'PENDING' %}
+                        <button class="status-btn">Accept</button>
+                    {% elif order.order_status == 'ACCEPTED' %}
+                        <button class="status-btn">Start Prepping</button>
+                    {% elif order.order_status == 'PREPARING' %}
+                        <button class="status-btn">Ready</button>
+                    {% elif order.order_status == 'READY' %}
+                        <button class="status-btn disabled" disabled>Ready</button>
+                    {% endif %}
+                </form>
+
+                <!-- DROP-DOWN -->
+                <button class="expand-btn" data-order-id="{{ order.order_id }}">▼</button>
+            </div>
+        </div>
+
+        <!-- Order items (hidden until expanded) -->
+        <div id="items-{{ order.order_id }}" class="items-container">
+            <table class="order-items-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Cuisine</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.order_items %}
+                        <tr>
+                            <td>{{ item.menu_item.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.menu_item.price }}</td>
+                            <td>{{ item.menu_item.cuisine }}</td>
+                            <td>{{ item.menu_item.category }}</td>
+                            <td>{{ item.menu_item.Type }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+{% endblock content %}
+
+{% block script %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('expand-btn')) {
+                    const orderId = e.target.getAttribute('data-order-id');
+                    const box = document.getElementById("items-" + orderId);
+                    if (box) {
+                        box.classList.toggle("active");  // toggle display via CSS
+
+                        // Update arrow based on class
+                        e.target.textContent = box.classList.contains("active") ? "▲" : "▼";
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock script %}

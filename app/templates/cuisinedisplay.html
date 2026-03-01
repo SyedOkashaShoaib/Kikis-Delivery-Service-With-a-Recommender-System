@@ -1,0 +1,52 @@
+{% extends 'customer_dashboard.html' %}
+
+{% block items %}
+<div class="rounded-box mb-4">
+    {% block restaurants %}
+    <h5 class="mb-3">All Items</h5>
+    <div class="container mt-4">
+        {% if items %}
+        {% else %} <p class="text-muted">No items match your filter</p> {% endif %}
+        <div class="row g-4">
+            {% for x in items %}
+            <!-- Restaurant Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="restaurant-card position-relative">
+
+                    <!-- <img src="{{ url_for('static', filename='images/sample_restaurant.jpg') }}"
+                                        class="restaurant-img" alt="Restaurant"> -->
+
+                    <h5 class="restaurant-name mt-2">{{x.name}}</h5>
+                    <p class="restaurant-desc d-inline-block me-3 mb-1"><b>Cuisine: </b>{{x.category}}
+                    </p>
+                    <p class="restaurant-desc d-inline-block me-3 mb-1"><b>Price: </b>${{x.price}}</p>
+                    {% if x.discount > 0 %}
+                    <p class="restaurant-desc d-inline-block mb-1 discount-text"><b>Discount:
+                        </b>{{x.discount}} %</p>
+                    {% endif %}
+
+                    <!-- Add Button -->
+                    <a href="{{ url_for('add_to_cart', vendor_id=x.vendor_id, item_id = x.item_id) }}"
+                        class="btn add-btn">
+                        <i class="bi bi-plus"></i>
+                    </a>
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+
+
+
+    {% if next_url %}
+    <a href="{{next_url}}">Next page</a>
+    {% endif %}
+    {% if prev_url %}
+    <a href="{{prev_url}}">Previous page</a>
+    {% endif %}
+    {% endblock restaurants %}
+</div>
+{% endblock items %}

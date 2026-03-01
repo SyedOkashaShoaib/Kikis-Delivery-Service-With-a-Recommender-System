@@ -1,0 +1,44 @@
+{% extends 'customer_dashboard.html' %}
+{% block content %}
+
+<div class="container mt-4 d-flex justify-content-center">
+    <div class="rounded-box previous-orders-window w-100">
+        
+        <h4 class="mb-3">Previous Orders</h4>
+        <hr>
+
+        {% if items %}
+            {% for item in items %}
+            <div class="previous-item d-flex flex-column flex-md-row justify-content-between align-items-start 
+                        align-items-md-center p-3 mb-3">
+
+                <!-- ITEM INFO -->
+                <div>
+                    <h6 class="mb-1">{{ item.name }}</h6>
+                    <p class="text-muted mb-0">${{ item.price }}</p>
+                </div>
+
+                <!-- RATING -->
+                <form action="{{url_for('add_rating', item_id = item.item_id)}}" 
+                      method="POST" 
+                      class="mt-2 mt-md-0">
+
+                    <select name="rating" class="form-select rating-select" onchange="this.form.submit()">
+                        <option disabled selected>Rate this item</option>
+                        {% for r in range(1,6) %}
+                        <option value="{{ r }}">{{ r }}</option>
+                        {% endfor %}
+                    </select>
+
+                </form>
+
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">You have no previous orders.</p>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

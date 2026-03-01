@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+<!-- The three modules - customer, delivery guy, and vendor- use the same registration interface ATM, might change-->
+{% block body %}
+    <h1>Register Customer</h1>
+    <form action="" method="POST">
+        {{form.hidden_tag()}}
+        <p>
+            {{form.name.label}}<br>
+            {{form.name(size=32)}}<br> <!--size=32 simply means the visible number of characters in the input box NOT THE MAX NUMBER OF CHARS ALLOWED -->
+            {% for error in form.name.errors %}
+                <span style="color:red;">{{error}}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.username.label}}<br>
+            {{form.username(size=32)}}<br> <!--size=32 simply means the visible number of characters in the input box NOT THE MAX NUMBER OF CHARS ALLOWED -->
+            {% for error in form.username.errors %}
+                <span style="color:red;">{{error}}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.password.label}}<br>
+            {{form.password(size=32)}}<br>
+            {% for error in form.password.errors %}
+                <span style="color:red;">{{error}}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.confirm_pass.label}}<br>
+            {{form.confirm_pass(size=32)}}<br>
+            {% for error in form.confirm_pass.errors %}
+                <span style="color:red;">{{error}}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.location.label}}<br>
+            {{form.location(size=32)}}<br>
+            {% for error in form.location.errors %}
+                <span style="color:red;">{{error}}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.phone_number.label}}<br>
+            {{form.phone_number(size=32)}}<br>
+            {% for error in form.phone_number.errors %}
+                <span style="color:red;">{{error}}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.mail.label}}<br>
+            {{form.mail(size=32)}}<br>
+            {% for error in form.mail.errors %}
+                <span style="color:red;">{{error}}</span>
+            {% endfor %}
+        </p>
+        <p>{{form.submit()}}</p>
+    </form>
+{% endblock %}
+    <!-- name = StringField("Enter your name: ", validators=[DataRequired()])
+    password = PasswordField("Enter Password: ",validators=[DataRequired()])
+    confirm_pass = PasswordField("Confirm your password:", validators=[DataRequired(), EqualTo('password')])
+    customer_phone_number= StringField("Enter your Phone Number:(Optional) ")
+    customer_mail = StringField("Enter your Email: ", validators=[DataRequired(), Email()])
+    submit = SubmitField("Register") -->

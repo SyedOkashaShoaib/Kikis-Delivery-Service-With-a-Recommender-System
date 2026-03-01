@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delivery Dashboard</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #f4f4f4;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .title { font-size: 22px; font-weight: bold; margin-bottom: 10px; }
+    .label { font-weight: bold; margin-top: 10px; }
+    .input-box, select { padding: 8px; border-radius: 6px; border: 1px solid #ccc; width: 100%; margin-top: 4px; }
+    .btn { padding: 8px 14px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+    .btn:hover { background: #0066d1; }
+    .notification-card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
+    .notification-title { font-size: 18px; font-weight: bold; }
+    .notification-details { margin-top: 8px; color: #555; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Delivery Person Details -->
+    <div class="card">
+        <div class="title">Delivery Person Details</div>
+
+        <div class="label">Name</div>
+        <div>{{ delivery_person.name }}</div>
+
+        <div class="label">Phone</div>
+        <div>{{ delivery_person.d_phone }}</div>
+
+        <div class="label">Email</div>
+        <div>{{ delivery_person.d_email }}</div>
+
+        <div class="label">Registration Date</div>
+        <div>{{ delivery_person.d_reg_date.strftime('%Y-%m-%d') }}</div>
+
+        <div class="label">Salary</div>
+        <div>{{ delivery_person.salary }}</div>
+
+        <div class="label">Worked Hours</div>
+        <div>{{ delivery_person.worked_hours }}</div>
+
+        <div class="label">Last Paid</div>
+        <div>{{ delivery_person.last_paid.strftime('%Y-%m-%d') }}</div>
+
+        <div class="label">Wallet</div>
+        <div>{{ delivery_person.wallet }}</div>
+
+        <div class="label">Verified</div>
+        <div>{{ 'Yes' if delivery_person.v_verified else 'No' }}</div>
+    </div>
+
+    <!-- Status + Location Controls -->
+    <div class="card">
+        <div class="title">Update Status / Location</div>
+
+        <div style="display:flex; gap:20px; flex-wrap: wrap;">
+            <div style="flex:1;">
+                <div class="label">Current Location</div>
+                <input type="text" id="locationInput" class="input-box" placeholder="{{ delivery_person.location.full_address if delivery_person.location else '' }}">
+                <button class="btn" onclick="updateLocation()">Update Location</button>
+            </div>
+
+            <div style="flex:1;">
+                <div class="label">Status</div>
+                <select id="statusSelect">
+                    <option value="ON_DUTY" {% if delivery_person.status == 'ON_DUTY' %}selected{% endif %}>ON_DUTY</option>
+                    <option value="OFF_DUTY" {% if delivery_person.status == 'OFF_DUTY' %}selected{% endif %}>OFF_DUTY</option>
+                    <option value="IN_JOB" {% if delivery_person.status == 'IN_JOB' %}selected{% endif %}>IN_JOB</option>
+                </select>
+                <button class="btn" onclick="updateStatus()">Update Status</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Notifications -->
+    <div class="card">
+        <div class="title">Job Notifications</div>
+        <div id="notificationsContainer">
+            <!-- Jobs will appear here dynamically -->
+        </div>
+    </div>
+
+</div>
+<div class="container">
+    {% if current_job %}
+    <div class="card" id="current-job-card">
+        <div class="title">Current Job</div>
+
+        <div class="label">Order ID</div>
+        <div>{{ current_job.order_id }}</div>
+
+        <div class="label">Pickup</div>
+        <div>{{ current_job.vendor.location.full_address }}</div>
+
+        <div class="label">Dropoff</div>
+        <div>{{ current_job.customer.location.full_address }}</div>
+
+        <button class="btn" onclick="markDelivered('{{current_job.order_id}}')">Mark as Delivered</button>
+    </div>
+    {% endif %}
+</div>
+<script>
+function markDelivered(orderId) {
+    fetch(`/api/mark-delivered/${orderId}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("Job marked as delivered!");
+            location.reload(); // reload to refresh jobs & driver status
+        } else {
+            alert("Error: " + data.error);
+        }
+    })
+}
+
+    // Update location
+    function updateLocation() {
+        const location = document.getElementById("locationInput").value;
+        fetch("/deliveryguy_dashboard/update_location", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({location: location})
+        })
+        .then(res => res.json())
+        .then(data => { alert(data.message); })
+        .catch(err => console.error(err));
+    }
+
+    // Update status
+    function updateStatus() {
+        const status = document.getElementById("statusSelect").value;
+        fetch("/deliveryguy_dashboard/update_status", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({status: status})
+        })
+        .then(res => res.json())
+        .then(data => { alert(data.message); })
+        .catch(err => console.error(err));
+    }
+
+    // Polling for job notifications every 10s
+    function fetchJobs() {
+        fetch("/api/pending-jobs")
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById("notificationsContainer");
+            container.innerHTML = "";
+            data.jobs.forEach(job => {
+                const div = document.createElement("div");
+                div.className = "notification-card";
+                div.innerHTML = `
+                    <div class="notification-title">Order #${job.order_id}</div>
+                    <div class="notification-details">
+                        Pickup: ${job.pickup}<br>
+                        Dropoff: ${job.dropoff}<br>
+                        Distance: ${job.distance.toFixed(4)}
+                    </div>
+                    <button class="btn" onclick="acceptJob(${job.order_id})">Accept Job</button>
+                `;
+                container.appendChild(div);
+            });
+        });
+    }
+
+    function acceptJob(order_id) {
+        fetch(`/accept_job/${order_id}`, {method: "POST"})
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                fetchJobs(); // refresh list
+            }
+        });
+        
+    }
+
+    // Initial fetch
+    fetchJobs();
+    setInterval(fetchJobs, 10000); // poll every 10s. might make this shorter.
+    
+</script>
+
+</body>
+</html>

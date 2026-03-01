@@ -1,0 +1,120 @@
+/*
+    ======================================
+    1. Overall Page Layout & Centering
+    ======================================
+*/
+
+/* Center the entire login block vertically and horizontally */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh; /* Use min-height to push content down if page is empty */
+    padding: 20px;
+}
+
+/* The Login Form Window Style
+    - Max width for responsiveness on large screens
+    - Rounded corners and a clean background
+*/
+.login-form-window {
+    max-width: 450px;
+    width: 100%;
+    /* Soft background color, slightly off-white */
+    background-color: #ffffff; 
+    border-radius: 15px; /* Soft edges */
+}
+
+/*
+    ======================================
+    2. Logo & Company Name
+    ======================================
+*/
+
+.company-logo {
+    /* Logo size reduced from 100px to 80px */
+    width: 80px; 
+    height: auto;
+    border-radius: 50%; /* If you want a circular logo */
+    object-fit: cover;
+    border: 3px solid #f5a5bb; /* A soft border */
+}
+
+.company-name {
+    /* Use the primary brand color for the name */
+    color: #e02655;
+    font-weight: 700;
+    margin-top: 10px;
+    letter-spacing: 1.5px;
+}
+
+/*
+    ======================================
+    3. Form Specific Styling
+    ======================================
+*/
+
+#title {
+    color: #333; /* Darker color for the form title */
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* Style for the radio button group */
+.user-type-btn {
+    /* Use a light color for the outline */
+    border-color: #f5a5bb; 
+    color: #e02655;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.user-type-btn:hover {
+    background-color: #fce8f0; /* Very light pink on hover */
+}
+
+/* Highlight the checked radio button */
+.user-type-btn.active {
+    background-color: #e02655;
+    color: white;
+    border-color: #e02655;
+}
+
+/* Style for input fields */
+.form-control {
+    border-radius: 8px; /* Slightly rounded inputs */
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+}
+
+.form-control:focus {
+    border-color: #f5a5bb;
+    box-shadow: 0 0 0 0.25rem rgba(224, 38, 85, 0.25); /* Soft focus ring */
+}
+
+
+/* The Login Submit Button */
+.login-submit-btn {
+    /* Soft colored */
+    background-color: #f5a5bb; 
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 12px;
+    /* Soft edged */
+    border-radius: 30px; 
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.login-submit-btn:hover {
+    /* Darker shade of pink on hover */
+    background-color: #e02655; 
+    color: white;
+}
+
+.login-submit-btn:active {
+    /* Provide a subtle press effect */
+    transform: scale(0.99); 
+}

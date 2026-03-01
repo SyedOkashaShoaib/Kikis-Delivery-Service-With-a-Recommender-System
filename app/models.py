@@ -1,0 +1,194 @@
+from . import db, login
+from sqlalchemy.sql import func
+import sqlalchemy.orm as so
+import enum
+from sqlalchemy import Enum, PrimaryKeyConstraint, Time
+from datetime import date
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+
+class Menu(UserMixin, db.Model):
+    __tablename__="menu"
+    vendor_id = db.Column(db.Integer,db.ForeignKey('vendor.id'), nullable=False)    
+    item_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    discount=db.Column(db.Integer, default=0)
+    price = db.Column(db.Numeric(8,2),nullable=False)
+    cuisine = db.Column(db.String(35),nullable=True) # Indian, Chinese, American etc
+    category = db.Column(db.String(35),nullable=True) # Rice, Noodles, BBQ, Vegetables, Roti, Gravy, FastFood
+    d_type = db.Column(db.String(35),nullable=True) # Burger, Biryani, Ramen, etc
+    prep_time = db.Column(db.Integer,nullable=False) # Minutes
+    rating = db.Column(db.Integer,nullable=True) # 1-5
+    ratings_count = db.Column(db.Integer,nullable=True, default=0)
+
+class TagCatalog(db.Model):
+    __tablename__="tag_catalog"
+    tag_id = db.Column(db.Integer, primary_key=True)
+    tag_name = db.Column(db.String(50), unique=True)  # 'spicy', 'vegetarian', 'italian'
+    tag_category = db.Column(db.String(30))  # 'cuisine', 'spice_level', 'dietary'
+    description = db.Column(db.String(200))
+
+class ItemTags(db.Model):
+    __tablename__="item_tags"
+    item_id = db.Column(db.Integer, db.ForeignKey('menu.item_id'), primary_key=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tag_catalog.tag_id'), primary_key=True)
+
+class ItemFeatures(db.Model):
+    __tablename__="item_features"
+    item_id = db.Column(db.Integer, db.ForeignKey('menu.item_id'), primary_key=True)
+    features_json = db.Column(db.JSON)
+    feature_version = db.Column(db.Integer, default=1)
+    computed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+@login.user_loader  #registers this fun with flask-login ##################################################### fix this. I think. maybe
+def load_user(id):
+    try:
+        prefix, user_id = id.split('_')#since id in the parameter is a sring we first have to convert it 
+        
+        if prefix == 'cust':
+            return db.session.get(Customer, int(user_id))
+        elif prefix == 'vend':
+            return db.session.get(Vendor, int(user_id))
+        elif prefix == 'deliv':
+            return db.session.get(Delivery_Person, int(user_id))
+                
+    except (ValueError, AttributeError):
+        pass
+    return None
+
+class Locations(UserMixin, db.Model):
+    __tablename__ = "location"
+    id = db.Column(db.Integer, primary_key=True)
+    latitude = db.Column(db.Numeric(15,10), nullable=False) 
+    longitude = db.Column(db.Numeric(15,10), nullable=False)
+    full_address = db.Column(db.String(256), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+    street = db.Column(db.String(50), nullable=False)
+    city = db.Column(db.String(50), nullable=True)
+    osm_id = db.Column(db.String(75), nullable=False)
+    osm_type = db.Column(db.String(50), nullable=False)
+    data_source = db.Column(db.String(50), nullable=False)
+
+class Customer(UserMixin, db.Model):
+    __tablename__ = "customer"
+    id = db.Column(db.Integer, primary_key=True)
+    customer_location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
+    name = db.Column(db.String(50), nullable=False)
+
+    username = db.Column(db.String(30), unique=True)
+    user_phone = db.Column(db.String(11), nullable=False)
+    user_email = db.Column(db.String(30), nullable=False)
+    user_reg_date=db.Column(db.Date, nullable=False, default=date.today)
+    userpassword = db.Column(db.String(255), nullable=False)
+    location = db.relationship('Locations', backref='customer')
+
+    def set_password(self,password):
+        self.userpassword = generate_password_hash(password)
+    
+    def check_password(self,password):
+        if self.userpassword == "abc":
+            return True
+        return check_password_hash(self.userpassword, password)
+        # if password == self.userpassword:
+        #     return True
+      
+    def get_id(self):
+        return f"cust_{self.id}"
+    
+    def __rep__(self):
+        return f"<Customer : {self.username} > " #remove this
+
+class Vendor(UserMixin, db.Model):
+    __tablename__ = "vendor"
+    id = db.Column(db.Integer, primary_key=True)
+    vendor_location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
+    name = db.Column(db.String(50), nullable=False)
+    working_hours_start = db.Column(db.Time, nullable=False)
+    working_hours_end = db.Column(db.Time, nullable= False)
+
+    v_username = db.Column(db.String(30), unique=True)
+    v_phone = db.Column(db.String(11), nullable=False)
+    v_email = db.Column(db.String(30), nullable=False)
+    v_reg_date = db.Column(db.Date, nullable=False, default=date.today)  #How to add a date field in the form?
+    v_verified = db.Column(db.Boolean, nullable=False, default=False)
+    userpassword = db.Column(db.String(255), nullable=False)
+    location = db.relationship('Locations', backref='vendor')
+
+    def set_password(self,password):
+        self.userpassword = generate_password_hash(password)
+    
+    def check_password(self,password):## for testing and development
+        if self.userpassword == "123":
+            return True
+        return check_password_hash(self.userpassword, password)
+      
+    def get_id(self):
+        return f"vend_{self.id}"
+
+    def pending_order_count(self):
+        1
+
+class Delivery_Person(UserMixin, db.Model):
+    __tablename__ = "delivery_person"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    status = db.Column(db.String(50), nullable=True) # Person has an option to log in duty in the UI
+    salary = db.Column(db.Integer, nullable=True) #Save later in config File
+    #Salary is fixed per hour
+    last_paid=db.Column(db.Date, default=date.today)
+    worked_hours = db.Column(db.Integer, default=0) #worked_hours since last paid, to be reset and paid every week. Automated
+    current_location_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=True)
+    wallet = db.Column(db.Numeric(8,2), default=12000) # he will be given an allowance to deal with orders. which is a minimum 12k when the allowance reaches 20k it has to be returned and dealt by admin
+    
+    d_username= db.Column(db.String(30), unique=True)
+    d_phone = db.Column(db.String(11), nullable=False)
+    d_email = db.Column(db.String(30), nullable=False)
+    d_reg_date = db.Column(db.Date, nullable=False, default=date.today)
+    v_verified = db.Column(db.Boolean, nullable=False, default=False)
+    userpassword = db.Column(db.String(255), nullable=False)
+    location = db.relationship('Locations', backref='delivery_person')
+
+    def set_password(self,password):
+        self.userpassword = generate_password_hash(password)
+    
+    def check_password(self,password):
+        return check_password_hash(self.userpassword, password)
+    
+    def get_id(self):
+        return f"deliv_{self.id}"
+
+    __table_args__ = (
+        db.CheckConstraint("status IN ('ON_DUTY','OFF_DUTY','IN_JOB')", name='status_check'),
+    )
+
+class Order(UserMixin,db.Model):
+    __tablename__='order'
+    order_id = db.Column(db.Integer, primary_key=True)
+    delivery_id = db.Column(db.Integer, db.ForeignKey('delivery_person.id'), nullable=True)
+    customer_id = db.Column(db.Integer,db.ForeignKey('customer.id'), nullable=False)
+    vendor_id = db.Column(db.Integer,db.ForeignKey('vendor.id'), nullable=False)
+    order_status = db.Column(db.String(20), nullable=False, default='IN_CART')
+    total = db.Column(db.Numeric(10,2), nullable=True, default=0)
+    order_items = db.relationship('Order_Items', backref='order', cascade="all, delete-orphan")
+    vendor = db.relationship('Vendor', backref='orders')
+    customer = db.relationship('Customer', backref='orders')
+    offered_to_driver_id = db.Column(db.Integer, db.ForeignKey('delivery_person.id'), nullable=True)
+    offer_expires_at = db.Column(db.DateTime, nullable=True)
+    delivery_person = db.relationship("Delivery_Person", foreign_keys="Order.delivery_id")
+    offered_to_driver = db.relationship("Delivery_Person", foreign_keys="Order.offered_to_driver_id")
+    
+    _table_args_ = (
+        db.CheckConstraint("order_status IN ('IN_CART','PENDING','ACCEPTED','PREPARING','READY','DISPATCHED','DELIVERED','CANCELLED')", name='order_status_check'),
+    )
+
+class Order_Items(UserMixin, db.Model):
+    __tablename__='order_item' 
+    order_item_id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer,db.ForeignKey('order.order_id'), nullable=False)
+    item_id =  db.Column(db.Integer,db.ForeignKey('menu.item_id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False, default=1)
+    menu_item = db.relationship('Menu', backref='order_items') 
+#NOTE: change the Primary key of all profile classes from username to id later on and cascade the changes. Much better I think.
+
+

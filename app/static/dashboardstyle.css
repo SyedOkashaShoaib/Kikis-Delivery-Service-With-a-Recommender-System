@@ -1,0 +1,314 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+::after,
+::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+.company-title {
+    font-size: 1.1rem;
+    color: #fff;
+}
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+.wrapper {
+    display: flex;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    transition: all 0.35s ease-in-out;
+    background-color: #fff;
+    min-width: 0;
+}
+
+#sidebar {
+    width: 70px;
+    min-width: 70px;
+    z-index: 1000;
+    transition: all .25s ease-in-out;
+    background-color: #0e2238;
+    display: flex;
+    flex-direction: column;
+}
+
+#sidebar.expand {
+    width: 260px;
+    min-width: 260px;
+}
+
+.toggle-btn {
+    background-color: transparent;
+    cursor: pointer;
+    border: 0;
+    padding: 0.75rem 1rem;   /* Medium spacing (balanced) */
+}
+.toggle-btn i {
+    font-size: 1.5rem;
+    color: #FFF;
+}
+
+.sidebar-logo {
+    margin: auto 0;
+}
+
+.sidebar-logo a {
+    color: #FFF;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+#sidebar:not(.expand) .sidebar-logo,
+#sidebar:not(.expand) a.sidebar-link span {
+    display: none;
+}
+
+#sidebar.expand .sidebar-logo,
+#sidebar.expand a.sidebar-link span {
+    animation: fadeIn .25s ease;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.sidebar-nav {
+    padding: 2rem 0;
+    flex: 1 1 auto;
+}
+
+a.sidebar-link {
+    padding: .625rem 1.625rem;
+    color: #FFF;
+    display: block;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-link i,
+.dropdown-item i {
+    font-size: 1.1rem;
+    margin-right: .75rem;
+}
+
+a.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, .075);
+    border-left: 3px solid #3b7ddd;
+}
+
+.sidebar-item {
+    position: relative;
+}
+
+#sidebar:not(.expand) .sidebar-item .sidebar-dropdown {
+    position: absolute;
+    top: 0;
+    left: 70px;
+    background-color: #0e2238;
+    padding: 0;
+    min-width: 15rem;
+    display: none;
+}
+
+#sidebar:not(.expand) .sidebar-item:hover .has-dropdown+.sidebar-dropdown {
+    display: block;
+    max-height: 15em;
+    width: 100%;
+    opacity: 1;
+}
+
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"]::after {
+    border: solid;
+    border-width: 0 .075rem .075rem 0;
+    content: "";
+    display: inline-block;
+    padding: 2px;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.4rem;
+    transform: rotate(-135deg);
+    transition: all .2s ease-out;
+}
+
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"].collapsed::after {
+    transform: rotate(45deg);
+    transition: all .2s ease-out;
+}
+
+.navbar {
+    background-color: #f5f5f5;
+    box-shadow: 0 0 2rem 0 rgba(33, 37, 41, .1);
+}
+
+.navbar-expand .navbar-collapse {
+    min-width: 200px;
+}
+
+.avatar {
+    height: 40px;
+    width: 40px;
+}
+
+        .order-row {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f7f7f7;
+        }
+
+        .order-info {
+            font-weight: bold;
+        }
+
+        .items-container {
+            margin-left: 20px;
+            padding: 10px 14px;
+            background-color: #f1f3f5;
+            border-left: 3px solid #007bff;
+            border-radius: 4px;
+        }
+        .items-container {
+            display: none;       /* default hidden */
+        }
+
+        .items-container.active {
+            display: block;      /* shown when .active is added */
+        }
+                .items-container ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .items-container li {
+            background: #e9ecef;
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            list-style: disc;   /* Or none if you prefer */
+        }
+
+        .expand-btn, .status-btn {
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .expand-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .status-btn {
+            background-color: #28a745;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .status-btn.disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+        .order-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .order-items-table th,
+        .order-items-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .order-items-table th {
+            background: #f2f2f2;
+            text-align: left;
+        }
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            color: white;
+            display: inline-block;
+        }
+
+        /* PENDING — Yellow */
+        .status-pending {
+            background-color: #f4c542;
+            color: #000;
+        }
+
+        /* ACCEPTED — Blue */
+        .status-accepted {
+            background-color: #3b82f6;
+        }
+
+        /* PREPARING — Orange */
+        .status-preparing {
+            background-color: #f97316;
+        }
+
+        /* READY — Green */
+        .status-ready {
+            background-color: #22c55e;
+        }
+
+        /* DISPATCHED — Purple */
+        .status-dispatched {
+            background-color: #8b5cf6;
+        }
+
+        /* DELIVERED — Gray */
+        .status-delivered {
+            background-color: #6b7280;
+        }
+
+        /* CANCELLED — Red */
+        .status-cancelled {
+            background-color: #dc2626;
+        }
+  
+
+@media (min-width: 768px) {}
+
+
+.add-btn {
+    padding: 10px 20px !important;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.menu-header {
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
